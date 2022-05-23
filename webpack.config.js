@@ -32,6 +32,19 @@ Encore
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
 
+    .copyFiles({
+        from: './assets/images',
+
+        // optional target path, relative to the output dir
+        to: 'images/[path][name].[ext]',
+
+        // if versioning is enabled, add the file hash too
+        //to: 'images/[path][name].[hash:8].[ext]',
+
+        // only copy files matching this pattern
+        //pattern: /\.(png|jpg|jpeg)$/
+    })
+
     /*
      * FEATURE CONFIG
      *
@@ -55,8 +68,8 @@ Encore
         config.corejs = 3;
     })
 
-    // enables Sass/SCSS support
-    //.enableSassLoader()
+    // enables Sass / SCSS support
+    .enableSassLoader()
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
@@ -70,6 +83,28 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
-;
+    ;
 
-module.exports = Encore.getWebpackConfig();
+const fullConfig = Encore.getWebpackConfig();
+
+fullConfig.devServer = {
+
+    headers: {
+
+        'Access-Control-Allow-Origin': '*',
+
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+
+        'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+
+    },
+
+    watchFiles: {
+
+        paths: ['templates/**/*.html.twig'],
+
+    },
+
+};
+
+module.exports = fullConfig;
