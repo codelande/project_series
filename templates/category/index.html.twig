@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CategoryController!{% endblock %}
+
+{% block body %}
+
+	{% for category in categories %}
+		<div>
+			<h2>{{ category.name }}</h2>
+
+			<a href="{{ path("categories_show", { categoryName: category.name }) }}">Voir la fiche</a>
+		</div>
+	{% else %}
+		Aucune série trouvée.
+	{% endfor %}
+	<a href="{{ path('app_default') }}">
+		Retour à l'accueil
+	</a>
+{% endblock %}

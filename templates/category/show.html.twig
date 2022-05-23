@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Wild Series
+{% endblock %}
+
+
+{% block body %}
+	<div class="media">
+
+
+		<div class="media-body">
+			{% for program in programs %}
+
+				<a href="{{ path("program_show", { id: program.id }) }}">
+					<h1 class="mt-0">{{ program.title }}</h1>
+				</a>
+
+
+				<p>{{ program.synopsis }}</p>
+
+				<p>Catégorie :
+					{{ program.category.name }}</p>
+			{% endfor %}
+		</div>
+
+	</div>
+
+	<a href="{{ path('categories_index') }}">
+
+		Retour à la liste des catégories
+
+	</a>
+{% endblock %}
