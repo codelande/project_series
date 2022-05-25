@@ -6,9 +6,9 @@
 
 {% block body %}
 <pre>
-    {{ dump(season) }}
-</pre>
-<pre>
     {{ dump(episodes) }}
 </pre>
+{% for episode in episodes %}
+  <a href="{{ path("program_episode_show", { programId: program.id, seasonId: season.id, episodeId: episode.id}) }}">EP n°{{episode.number}}: {{ episode.title }}</a>
+{% endfor %}
 {% endblock %}
