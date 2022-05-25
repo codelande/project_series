@@ -42,7 +42,7 @@ class ProgramController extends AbstractController
             'seasons' => $seasons,
         ]);
     }
-    #[Route('/{programId}/seasons/{seasonId}/', methods: ['GET'], name: 'program_season_show')]
+    #[Route('/{programId}/seasons/{seasonId}/', methods: ['GET'], name: 'season_show')]
     public function showSeason(int $programId, int $seasonId, ProgramRepository $programRepository, SeasonRepository $seasonRepository, EpisodeRepository $episodeRepository)
     {
         $program = $programRepository->findOneBy(['id' => $programId]);
