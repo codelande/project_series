@@ -1,19 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CategoryController!{% endblock %}
+{% block title %}Hello CategoryController!
+{% endblock %}
 
 {% block body %}
 
 	{% for category in categories %}
-		<div>
-			<h2>{{ category.name }}</h2>
 
-			<a href="{{ path("categories_show", { categoryName: category.name }) }}">Voir la fiche</a>
+		<div class="card py-2">
+			<div class="card-body">
+				<div>
+					<h2>{{ category.name }}</h2>
+
+					<a href="{{ path("categories_show", { categoryName: category.name }) }}">Voir la fiche</a>
+				</div>
+			</div>
 		</div>
 	{% else %}
 		Aucune série trouvée.
+
 	{% endfor %}
-	<a href="{{ path('app_default') }}">
+
+	<a class="btn btn-success my-4" href="{{ path('app_default') }}">
 		Retour à l'accueil
 	</a>
+
 {% endblock %}

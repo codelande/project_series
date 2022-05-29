@@ -9,18 +9,24 @@
 	<h1>Toutes les séries de la table program :
 	</h1>
 	{% for program in programs %}
-		<div>
-			<h2>{{ loop.index }}
-				/
-				{{ program.title }}
-				- Catégorie :
-				{{ program.category.name }}</h2>
-			<p>{{ program.synopsis }}</p>
-			<a href="{{ path("program_show", { program: program.id }) }}">Voir la fiche</a>
-		</div>
-	{% else %}
-		Aucune série trouvée.
-	{% endfor %}
+	<div class="d-felx">
+		<div class="card">
+			<div class="card-body">
+
+				<div>
+					<h2>{{ loop.index }}
+						/
+						{{ program.title }}
+						- Catégorie :
+						{{ program.category.name }}</h2>
+					<p>{{ program.synopsis }}</p>
+					<a href="{{ path("program_show", { program: program.id }) }}">Voir la fiche</a>
+				</div>
+			{% else %}
+				Aucune série trouvée.
+	
+	{% endfor %}		</div>
+		</div></div>
 	<a href="{{ path('app_default') }}">
 		Retour à l'accueil
 	</a>

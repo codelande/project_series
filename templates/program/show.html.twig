@@ -26,6 +26,21 @@
 		{% endfor %}
 	</div>
 <br>
+<strong>Acteurs :</strong>
+
+<ul>
+
+    {% for actor in program.actors %}
+
+        <a href="{{ path("app_actor", {id: actor.id}) }}"><li>{{ actor.name }}</li></a>
+
+    {% else %}
+
+        <li>Aucun acteur pour cette série</li>
+
+    {% endfor %}
+
+</ul>
 	<a href="{{ path('program_index') }}">
 
 		Retour à la liste des programmes
