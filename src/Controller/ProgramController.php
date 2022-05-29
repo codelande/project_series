@@ -13,8 +13,7 @@ use App\Entity\Season;
 use App\Entity\Episode;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\ProgramType;
-
-
+use App\Service\Slugify;
 
 #[Route('/program', name: 'program_')]
 class ProgramController extends AbstractController
@@ -31,7 +30,7 @@ class ProgramController extends AbstractController
         ]);
     }
     #[Route('/new', name: 'new')]
-    public function new(Request $request, ProgramRepository $programRepository): Response
+    public function new(Request $request, ProgramRepository $programRepository, Slugify $slugify): Response
 
     {
         $program = new program();
@@ -41,10 +40,11 @@ class ProgramController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $slugify->generate($program->getTitle());
+            $program->setSlug($slug);
             $programRepository->add($program, true);
             // Redirect to categories list
             return $this->redirectToRoute('categories_index');
-
         }
 
         return $this->renderForm('program/new.html.twig', [
