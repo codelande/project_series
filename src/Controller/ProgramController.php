@@ -14,6 +14,8 @@ use App\Entity\Episode;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\ProgramType;
 use App\Service\Slugify;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 #[Route('/program', name: 'program_')]
 class ProgramController extends AbstractController
@@ -30,7 +32,7 @@ class ProgramController extends AbstractController
         ]);
     }
     #[Route('/new', name: 'new')]
-    public function new(Request $request, ProgramRepository $programRepository, Slugify $slugify): Response
+    public function new(Request $request, ProgramRepository $programRepository, Slugify $slugify, MailerInterface $mailer): Response
 
     {
         $program = new program();
@@ -43,6 +45,12 @@ class ProgramController extends AbstractController
             $slug = $slugify->generate($program->getTitle());
             $program->setSlug($slug);
             $programRepository->add($program, true);
+            $email = (new Email())
+                ->from($this->getParameter('mailer_from'))
+                ->to('test@test.com')
+                ->subject('Une nouvelle série vient d\'être publiée !')
+                ->html($this->renderView('program/newProgramEmail.html.twig', ['program' => $program]));
+            $mailer->send($email);
             // Redirect to categories list
             return $this->redirectToRoute('categories_index');
         }
@@ -50,9 +58,8 @@ class ProgramController extends AbstractController
         return $this->renderForm('program/new.html.twig', [
             'form' => $form,
         ]);
-
     }
-    
+
     #[Route('/{slug}/', methods: ['GET'], name: 'show')]
     public function show(Program $program, SeasonRepository $seasonRepository)
     {

@@ -12,7 +12,7 @@
 		<div class="media-body">
 			{% for program in programs %}
 
-				<a href="{{ path("program_show", { program: program.id }) }}">
+				<a href="{{ path("program_show", { slug: program.slug }) }}">
 					<h1 class="mt-0">{{ program.title }}</h1>
 				</a>
 
