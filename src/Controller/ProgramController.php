@@ -51,12 +51,9 @@ class ProgramController extends AbstractController
             'form' => $form,
         ]);
 
-        // Alternative
-        // return $this->render('category/new.html.twig', [
-        //   'form' => $form->createView(),
-        // ]);
     }
-    #[Route('/{program}/', methods: ['GET'], name: 'show')]
+    
+    #[Route('/{slug}/', methods: ['GET'], name: 'show')]
     public function show(Program $program, SeasonRepository $seasonRepository)
     {
         // same as $program = $programRepository->find($id);
@@ -73,7 +70,7 @@ class ProgramController extends AbstractController
             'seasons' => $seasons,
         ]);
     }
-    #[Route('/{programId}/seasons/{seasonId}/', methods: ['GET'], name: 'season_show')]
+    #[Route('/{slug}/seasons/{seasonId}/', methods: ['GET'], name: 'season_show')]
     public function showSeason(Program $programId, Season $seasonId, ProgramRepository $programRepository, SeasonRepository $seasonRepository, EpisodeRepository $episodeRepository)
     {
         $episodes = $episodeRepository->findBy(['season' => $seasonId->getId()]);
@@ -84,7 +81,7 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('/{programId}/season/{seasonId}/episode/{episodeId}', methods: ['GET'], name: 'episode_show')]
+    #[Route('/{slug}/season/{seasonId}/episode/{episodeId}', methods: ['GET'], name: 'episode_show')]
     public function showEpisode(Program $programId, Season $seasonId, Episode $episodeId)
     {
         return $this->render('program/episode_show.html.twig', [
