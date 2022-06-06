@@ -14,6 +14,7 @@ use App\Entity\Episode;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\ProgramType;
 use App\Service\Slugify;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
@@ -44,6 +45,7 @@ class ProgramController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $slug = $slugify->generate($program->getTitle());
             $program->setSlug($slug);
+            $program->setOwner($this->getUser());
             $programRepository->add($program, true);
             $email = (new Email())
                 ->from($this->getParameter('mailer_from'))
@@ -77,6 +79,30 @@ class ProgramController extends AbstractController
             'seasons' => $seasons,
         ]);
     }
+
+    #[Route('/{slug}/edit', methods: ['GET', 'POST'], name: 'edit')]
+    public function edit(Request $request, Program $program, ProgramRepository $programRepository)
+    {
+        $form = $this->createForm(ProgramType::class, $program);
+        $form->handleRequest($request);
+
+        if (!($this->getUser() == $program->getOwner())) {
+            // If notthe owner, throws a 403 Access Denied exception
+            throw new AccessDeniedException('Only the owner can edit the program!');
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $programRepository->add($program, true);
+
+            return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('program/edit.html.twig', [
+            'program' => $program,
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/{slug}/seasons/{seasonId}/', methods: ['GET'], name: 'season_show')]
     public function showSeason(Program $programId, Season $seasonId, ProgramRepository $programRepository, SeasonRepository $seasonRepository, EpisodeRepository $episodeRepository)
     {
