@@ -2,6 +2,7 @@
 // src/Controller/ProgramController.php
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Repository\EpisodeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,8 +12,10 @@ use App\Repository\SeasonRepository;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
+use App\Form\CommentType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\ProgramType;
+use App\Repository\CommentRepository;
 use App\Service\Slugify;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Mailer\MailerInterface;
@@ -115,12 +118,27 @@ class ProgramController extends AbstractController
     }
 
     #[Route('/{slug}/season/{seasonId}/episode/{episodeId}', methods: ['GET'], name: 'episode_show')]
-    public function showEpisode(Program $programId, Season $seasonId, Episode $episodeId)
+    public function showEpisode(CommentRepository $commentRepository, Request $request, Program $programId, Season $seasonId, Episode $episodeId)
     {
+        $comment = new Comment;
+
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setAuthor($this->getUser());
+            $comment->setEpisode($episodeId);
+            $commentRepository->add($comment, true);
+
+            return $this->redirectToRoute('season_show', [], Response::HTTP_SEE_OTHER);
+        }
+
         return $this->render('program/episode_show.html.twig', [
             'program' => $programId,
             'season' => $seasonId,
             'episode' => $episodeId,
+            'form' => $form,
         ]);
     }
 }
